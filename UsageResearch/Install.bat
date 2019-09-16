@@ -31,6 +31,10 @@ if not exist "C:\Program Files\Python37\python.exe" (
 :: ECHO "Installed python and requests library"
 py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%uname%&email=%email%&userid=%pid%')"
 
+cd %install_dir%Driver
+python %install_dir%Driver\unzipDriver.py
+
+cd %install_dir%
 powershell -Command "& {cat  ${env:install_dir}Client\template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\FileUploader.xml}" 
 schtasks.exe /create /tn FICSUploader /XML "%install_dir%Client\FileUploader.xml"
 "%install_dir%Driver\devcon.exe" /r install "%install_dir%Driver\KMDFSystemProfiler.inf" Root\FIRMASystemMonitor
