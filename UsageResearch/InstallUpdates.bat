@@ -3,7 +3,7 @@ SET install_dir=%~dp0
 SET faros_domain=http://faros.ece.ufl.edu:12380/
  
 cd %install_dir%Driver
-python %install_dir%Driver\unzipDriver.py
+python unzipDriver.py
 
 cd %install_dir%
 "%install_dir%Driver\devcon.exe" /r install "%install_dir%Driver\KMDFSystemProfiler.inf" Root\FIRMASystemMonitor

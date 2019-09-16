@@ -32,7 +32,7 @@ if not exist "C:\Program Files\Python37\python.exe" (
 py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%uname%&email=%email%&userid=%pid%')"
 
 cd %install_dir%Driver
-python %install_dir%Driver\unzipDriver.py
+python unzipDriver.py
 
 cd %install_dir%
 powershell -Command "& {cat  ${env:install_dir}Client\template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\FileUploader.xml}" 
