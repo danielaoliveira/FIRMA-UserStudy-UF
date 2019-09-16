@@ -7,14 +7,18 @@ cd "%install_dir%"
 :: Remove the Event logger
 msiexec /x "%install_dir%EventLogger\FIRMALoggerInstaller.msi" /qn /L+ Install.log
 
-py -c "from Client.client import get_request; get_request('%faros_domain%leave?userid=%pid%')"
+py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%leave?userid=%pid%')"
+
 SET /p python_uninstall=<"%install_dir%Client\is_python_installed.txt"
 if %python_uninstall% == 1 (
 "%install_dir%Client\python-3.7.3-amd64-webinstall" /quiet /uninstall
 )
 
 schtasks /delete /f /tn "FICSUploader"
-"%install_dir%Driver\devcon.exe" remove "Root\KMDFSystemProfiler"
+"%install_dir%Driver\devcon.exe" remove "Root\FIRMASystemMonitor"
+
+del "%install_dir%Client\is_python_installed.txt"
+del "%install_dir%Client\FileUploader.xml"
 
 :: Remove the driver log directories
 if exist C:\Windows\TestRecord0 rd C:\Windows\TestRecord0 /s /q

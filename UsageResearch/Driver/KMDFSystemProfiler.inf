@@ -3,133 +3,92 @@
 ;
 
 [Version]
-Signature="$WINDOWS NT$"
-Class = SystemMonitor ; TODO: edit Class
-ClassGuid= {156D8914-4FED-4E61-843D-FC43798F3168} ;{4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: edit ClassGuid
-Provider=%uffics%                                      
-CatalogFile=KMDFSystemProfiler.cat
-DriverVer=10/24/2017,18.42.21.98
-
-[DestinationDirs]
-DefaultDestDir = 12
-KMDFProfiler.DriverFiles = 12
+Signature = "$WINDOWS NT$"
+Class = %ClassName% ; TODO: edit Class
+ClassGuid = "{9151D484-82DA-48DE-B720-6978147EF2CF}"; {156D8914-4FED-4E61-843D-FC43798F3168};{57465043-616C-6C6F-7574-5F636C617373}; ;{4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: edit ClassGuid
+Provider = %uffics%
+CatalogFile = "KMDFSystemProfiler.cat"
+DriverVer = 06/06/2019,17.21.29.112
 
 ; ================= Class section =====================
 
-[ClassInstall32.ntamd64]
-Addreg=ClassReg
+[ClassInstall32]
+AddReg = ClassReg
 
 [ClassReg]
 HKR,,,0,%ClassName%
 HKR,,Icon,,-5
 
 [SourceDisksNames]
-1 = %DiskName%,,,""
+1 = %SourceDiskName%,,,""
 
 [SourceDisksFiles]
 KMDFSystemProfiler.sys  = 1,,
 
-[DefaultUninstall]
-DefFiles = KMDFProfiler.DriverFiles
-
-[DefaultUninstall.Services]
-DelService = KMDFSystemProfiler,0x200 ; SPSVCINST_STOPSERVICE
-DelService = %KMDFSystemProfiler.SVCDESC%,0x200
+[DestinationDirs] 
+DefaultDestDir = 12 ; %windir%\system32\drivers 
+KMDFSystemProfiler.DriverFiles = 12 ; %windir%\system32\drivers 
 
 ;*****************************************
 ; Install Section
 ;*****************************************
+;[DefaultInstall] 
+;OptionDesc = %KMDFSystemProfilerDeviceDesc%
+;CopyFiles = KMDFSystemProfiler.DriverFiles
 
 [Manufacturer]
 %ManufacturerName%=Standard, NTamd64;NTamd64
 
 [Standard.NTamd64]
-%KMDFSystemProfiler.DeviceDesc%=KMDFSystemProfiler_Device, Root\KMDFSystemProfiler ;Root\*PNP0C34 ; TODO: edit hw-id
+%KMDFSystemProfilerDeviceDesc%=KMDFSystemProfiler_Device, Root\FIRMASystemMonitor;Root\*PNP0C34 ; TODO: edit hw-id
 
 [KMDFSystemProfiler_Device.NT]
 CopyFiles=Drivers_Dir
 
 [Drivers_Dir]
-KMDFSystemProfiler.sys
-
-;-------------- Service installation
+KMDFSystemProfiler.sys,,,0x00000040 ; COPYFLG_OVERWRITE_OLDER_ONLY 
+;
 [KMDFSystemProfiler_Device.NT.Services]
-AddService = KMDFSystemProfiler,%SPSVCINST_ASSOCSERVICE%, KMDFSystemProfiler_Service_Inst
+AddService = "KMDFSystemProfiler",%SPSVCINST_ASSOCSERVICE%, KMDFSystemProfiler.Service
+
+[DefaultInstall.Services] 
+AddService = %KMDFSystemProfilerSVCDESC%,,KMDFSystemProfiler.Service
+
+;*****************************************
+; Uninstall Section
+;*****************************************
+
+[DefaultUninstall]
+DelFiles = KMDFSystemProfiler.DriverFiles
+
+[DefaultUninstall.Services]
+;DelService = KMDFSystemProfiler,0x200 ; SPSVCINST_STOPSERVICE
+DelService = KMDFSystemProfiler.Service,0x200
+;DelReg     = KMDFSystemProfiler.DelRegistry
+
+[KMDFSystemProfiler.DriverFiles] 
+KMDFSystemProfiler.sys,,,0x00000040 ; COPYFLG_OVERWRITE_OLDER_ONLY 
 
 ;-------------- KMDFSystemProfiler driver install sections
-[KMDFSystemProfiler_Service_Inst]
-DisplayName    = %KMDFSystemProfiler.SVCDESC%
-ServiceType    = 2;1               ; SERVICE_KERNEL_DRIVER
-StartType      = 3;1               ; 3 for SERVICE_DEMAND_START
-ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+[KMDFSystemProfiler.Service]
+DisplayName    = %KMDFSystemProfilerSVCDESC%
+Description    = %KMDFSystemProfilerDeviceDesc%
+ServiceType    = 1; SERVICE_KERNEL_DRIVER
+StartType      = 0; SERVICE_BOOT_START
+ErrorControl   = 1; SERVICE_ERROR_NORMAL
 ServiceBinary  = %12%\KMDFSystemProfiler.sys
-LoadOrderGroup = Extended Base
-AddReg         = Minifilter.AddRegistry
-Dependencies   = FltMgr,TCPIPS
-
-
-[Minifilter.AddRegistry]
-HKR,%RegInstancesSubkeyName%,%RegDefaultInstanceValueName%,0x00000000,%DefaultInstance%
-HKR,%RegInstancesSubkeyName%"\"%Instance1.Name%,%RegAltitudeValueName%,0x00000000,%Instance1.Altitude%
-HKR,%RegInstancesSubkeyName%"\"%Instance1.Name%,%RegFlagsValueName%,0x00010001,%Instance1.Flags%
-HKR,%RegInstancesSubkeyName%"\"%Instance2.Name%,%RegAltitudeValueName%,0x00000000,%Instance2.Altitude%
-HKR,%RegInstancesSubkeyName%"\"%Instance2.Name%,%RegFlagsValueName%,0x00010001,%Instance2.Flags%
-HKR,%RegInstancesSubkeyName%"\"%Instance3.Name%,%RegAltitudeValueName%,0x00000000,%Instance3.Altitude%
-HKR,%RegInstancesSubkeyName%"\"%Instance3.Name%,%RegFlagsValueName%,0x00010001,%Instance3.Flags%
-
-
-
-
-;
-;--- KMDFSystemProfiler_Device Coinstaller installation ------Not Used
-;
-
-;[DestinationDirs]
-;KMDFSystemProfiler_Device_CoInstaller_CopyFiles = 11
-
-;[KMDFSystemProfiler_Device.NT.CoInstallers]
-;AddReg=KMDFSystemProfiler_Device_CoInstaller_AddReg
-;CopyFiles=KMDFSystemProfiler_Device_CoInstaller_CopyFiles
-
-;[KMDFSystemProfiler_Device_CoInstaller_AddReg]
-;HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
-
-;[KMDFSystemProfiler_Device_CoInstaller_CopyFiles]
-;WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
-
-;[SourceDisksFiles]
-;WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
-
-;[KMDFSystemProfiler_Device.NT.Wdf]
-;KmdfService =  KMDFSystemProfiler, KMDFSystemProfiler_wdfsect
-;[KMDFSystemProfiler_wdfsect]
-;KmdfLibraryVersion = $KMDFVERSION$
-
-
-
+;LoadOrderGroup = Extended Base
+Dependencies   = FltMgr, TCPIPS
 
 
 [Strings]
 uffics = "University of Florida FICS"
 SPSVCINST_ASSOCSERVICE = 0x00000002
 ManufacturerName = "University of Florida FICS"
-ClassName = "SystemMonitor" ; TODO: edit ClassName
-DiskName = "KMDFSystemProfiler Installation Disk"
-KMDFSystemProfiler.DeviceDesc = "KMDFSystemProfiler Device"
-KMDFSystemProfiler.SVCDESC = "KMDFSystemProfiler Service"
-
-RegInstancesSubkeyName = "Instances"
-RegDefaultInstanceValueName  = "DefaultInstance"
-RegAltitudeValueName    = "Altitude"
-RegFlagsValueName  = "Flags"
-
-DefaultInstance    = "Minispy - Top Instance"
-Instance1.Name     = "Minispy - Middle Instance"
-Instance1.Altitude = "328080"
-Instance1.Flags    = 0x0 ; Suppress automatic attachments
-Instance2.Name     = "Minispy - Bottom Instance"
-Instance2.Altitude = "328070"
-Instance2.Flags    = 0x0 ; Suppress automatic attachments
-Instance3.Name     = "Minispy - Top Instance"
-Instance3.Altitude = "328090"
-Instance3.Flags    = 0x0 ; Automatic attachments
+ClassName = "FIRMASystemMonitor"
+KMDFSystemProfilerDeviceDesc = "FIRMA SystemMonitor Driver"
+KMDFSystemProfilerSVCDESC = "FIRMASystemMonitorService"
+ServiceName = "KMDFSystemProfiler"
+DriverName = "KMDFSystemProfiler"
+DriverFileName = "KMDFSystemProfiler"
+SourceDiskName = "FIRMA Installation Disk"
