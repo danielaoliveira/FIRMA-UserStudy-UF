@@ -1,14 +1,13 @@
 @echo off
 SET install_dir=%~dp0
-SET faros_domain=http://faros.ece.ufl.edu:12380/
- 
-cd %install_dir%Driver
-python unzipDriver.py
 
+cd %install_dir%Driver
+START "" /D Sysmon.exe "-accepteula –i -c "%install_dir%Driver\sysmon_config.xml""
+ 
 cd %install_dir%
-"%install_dir%Driver\devcon.exe" /r install "%install_dir%Driver\KMDFSystemProfiler.inf" Root\FIRMASystemMonitor
+powershell -Command "& {cat  ${env:install_dir}Client\FICSWinEventLogger_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\FICSWinEventLogger.xml}" 
+schtasks.exe /create /tn FICSWinEventLogger /XML "%install_dir%Client\FICSWinEventLogger.xml"
 
 @echo off
-ECHO "You are about to restart your machine, please save all your current files/applications"
+ECHO "If you don't see any error messages hit Enter. Otherwise mail a screenshot"
 PAUSE
-shutdown -r -f -t 10 -c "Reboot System in 10 Seconds"

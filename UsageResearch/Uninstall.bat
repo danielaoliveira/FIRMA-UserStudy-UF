@@ -15,10 +15,13 @@ if %python_uninstall% == 1 (
 )
 
 schtasks /delete /f /tn "FICSUploader"
+schtasks /delete /f /tn "FICSWinEventLogger"
 "%install_dir%Driver\devcon.exe" remove "Root\FIRMASystemMonitor"
+"%install_dir%Driver\Sysmon.exe" -u
 
 del "%install_dir%Client\is_python_installed.txt"
 del "%install_dir%Client\FileUploader.xml"
+del "%install_dir%Client\FICSWinEventLogger.xml"
 
 :: Remove the driver log directories
 if exist C:\Windows\TestRecord0 rd C:\Windows\TestRecord0 /s /q
