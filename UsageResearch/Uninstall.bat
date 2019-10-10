@@ -17,7 +17,7 @@ if %python_uninstall% == 1 (
 schtasks /delete /f /tn "FICSUploader"
 schtasks /delete /f /tn "FICSWinEventLogger"
 "%install_dir%Driver\devcon.exe" remove "Root\FIRMASystemMonitor"
-"%install_dir%Driver\Sysmon.exe" -u
+"%install_dir%Driver\Sysmon.exe" -u force
 
 del "%install_dir%Client\is_python_installed.txt"
 del "%install_dir%Client\FileUploader.xml"

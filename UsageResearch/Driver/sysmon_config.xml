@@ -5,6 +5,8 @@
 	<ProcessCreate onmatch="exclude">
 		<CommandLine condition="begin with">C:\Windows\system32\</CommandLine> <!--Microsoft:Windows internal processes-->
 	</ProcessCreate>
+    <FileCreateTime onmatch="include">
+    </FileCreateTime>
     <ProcessTerminate onmatch="exclude">
 		<Image condition="begin with">C:\Windows\system32\</Image> <!--Microsoft:Windows internal processes-->
 	</ProcessTerminate>
@@ -22,5 +24,25 @@
 		<DestinationIp condition="is">127.0.0.1</DestinationIp>
 		<DestinationIp condition="begin with">fe80:0:0:0</DestinationIp>
 	</NetworkConnect>
+    <DriverLoad onmatch="include">
+    </DriverLoad>
+    <ImageLoad onmatch="include">
+    </ImageLoad>
+    <FileCreate onmatch="include">
+    </FileCreate>
+    <RegistryEvent onmatch="include">
+    </RegistryEvent>
+    <RawAccessRead onmatch="include">
+    </RawAccessRead>
+    <CreateRemoteThread onmatch="include">
+    </CreateRemoteThread>
+    <ProcessAccess onmatch="include">
+    </ProcessAccess>
+    <FileCreateStreamHash onmatch="include">
+    </FileCreateStreamHash>
+    <PipeEvent onmatch="include">
+    </PipeEvent>
+    <WmiEvent onmatch="include">
+    </WmiEvent>
   </EventFiltering>
 </Sysmon>
