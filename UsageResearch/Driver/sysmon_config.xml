@@ -4,7 +4,9 @@
   <EventFiltering>
 	<ProcessCreate onmatch="exclude">
 		<CommandLine condition="begin with">C:\Windows\System32\</CommandLine> <!--Microsoft:Windows internal processes-->
-		<CommandLine condition="begin with">C:\Windows\System32\wevtutil.exe</CommandLine> <!--Microsoft:Windows internal processes-->
+		<Image condition="begin with">C:\Windows\System32\</Image> <!--Microsoft:Windows internal processes-->
+		<CommandLine condition="begin with">\??\C:\Windows\system32\</CommandLine> <!--Microsoft:Windows internal processes-->
+		<CommandLine condition="begin with">wevtutil qe Microsoft-Windows-Sysmon/Operational</CommandLine> <!--Microsoft:Windows internal processes-->
 		<CommandLine condition="end with">UsageResearch\Client\client.pyw</CommandLine> <!--Microsoft:Windows internal processes-->
 		<CommandLine condition="end with">UsageResearch\Client\sysmon.bat</CommandLine> <!--Microsoft:Windows internal processes-->
 	</ProcessCreate>
