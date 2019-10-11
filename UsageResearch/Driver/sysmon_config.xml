@@ -3,12 +3,18 @@
   <HashAlgorithms>md5,sha256</HashAlgorithms>
   <EventFiltering>
 	<ProcessCreate onmatch="exclude">
-		<CommandLine condition="begin with">C:\Windows\system32\</CommandLine> <!--Microsoft:Windows internal processes-->
+		<CommandLine condition="begin with">C:\Windows\System32\</CommandLine> <!--Microsoft:Windows internal processes-->
+		<CommandLine condition="begin with">C:\Windows\System32\wevtutil.exe</CommandLine> <!--Microsoft:Windows internal processes-->
+		<CommandLine condition="end with">UsageResearch\Client\client.pyw</CommandLine> <!--Microsoft:Windows internal processes-->
+		<CommandLine condition="end with">UsageResearch\Client\sysmon.bat</CommandLine> <!--Microsoft:Windows internal processes-->
 	</ProcessCreate>
     <FileCreateTime onmatch="include">
     </FileCreateTime>
     <ProcessTerminate onmatch="exclude">
-		<Image condition="begin with">C:\Windows\system32\</Image> <!--Microsoft:Windows internal processes-->
+		<Image condition="begin with">C:\Windows\System32\</Image> <!--Microsoft:Windows internal processes-->
+		<Image condition="begin with">C:\Windows\System32\wevtutil.exe</Image> <!--Microsoft:Windows internal processes-->
+		<Image condition="end with">UsageResearch\Client\client.pyw</Image> <!--Microsoft:Windows internal processes-->
+		<Image condition="end with">UsageResearch\Client\sysmon.bat</Image> <!--Microsoft:Windows internal processes-->
 	</ProcessTerminate>
     <!-- Log network connection if the destination port equal 443 or 80 -->
     <NetworkConnect onmatch="include">
