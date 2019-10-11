@@ -9,6 +9,7 @@
 		<CommandLine condition="begin with">wevtutil qe Microsoft-Windows-Sysmon/Operational</CommandLine> <!--Microsoft:Windows internal processes-->
 		<CommandLine condition="end with">UsageResearch\Client\client.pyw</CommandLine> <!--Microsoft:Windows internal processes-->
 		<CommandLine condition="end with">UsageResearch\Client\sysmon.bat</CommandLine> <!--Microsoft:Windows internal processes-->
+        <Image condition="end with">FIRMALoggerInstaller\ProcessDataLogs.exe</Image> <!--Microsoft:Windows internal processes-->
 	</ProcessCreate>
     <FileCreateTime onmatch="include">
     </FileCreateTime>
@@ -17,6 +18,7 @@
 		<Image condition="begin with">C:\Windows\System32\wevtutil.exe</Image> <!--Microsoft:Windows internal processes-->
 		<Image condition="end with">UsageResearch\Client\client.pyw</Image> <!--Microsoft:Windows internal processes-->
 		<Image condition="end with">UsageResearch\Client\sysmon.bat</Image> <!--Microsoft:Windows internal processes-->
+        <Image condition="end with">FIRMALoggerInstaller\ProcessDataLogs.exe</Image> <!--Microsoft:Windows internal processes-->
 	</ProcessTerminate>
     <!-- Log network connection if the destination port equal 443 or 80 -->
     <NetworkConnect onmatch="include">
