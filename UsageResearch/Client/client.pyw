@@ -100,7 +100,7 @@ def main():
     user_id = [x.strip() for x in user_id]
     for i in range(7):
         # Zip and Upload Driver logs
-        zip_and_upload(user_id, RECORDS_DIR+'TestRecord'+str(i))
+        # zip_and_upload(user_id, RECORDS_DIR+'TestRecord'+str(i))
         # Zip and Upload Event logs
         zip_and_upload(user_id, EVENT_RECORDS_DIR+'EventRecord'+str(i))
 
