@@ -39,8 +39,20 @@ CALL "%install_dir%Driver\Sysmon.exe" /accepteula /i "%install_dir%Driver\sysmon
 wevtutil.exe sl Microsoft-Windows-Sysmon/Operational /ca:O:BAG:SYD:(A;;0xf0005;;;SY)(A;;0x5;;;BA)(A;;0x1;;;S-1-5-32-573)(A;;0x1;;;NS)
 
 :: Schedule a task for Sysmon log capture
-powershell -Command "& {cat  ${env:install_dir}Client\FICSWinEventLogger_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\FICSWinEventLogger.xml}" 
+powershell -Command "& {cat  ${env:install_dir}Client\FICSWinEventLogger_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\FICSWinEventLogger.xml}"
 schtasks.exe /create /tn FICSWinEventLogger /XML "%install_dir%Client\FICSWinEventLogger.xml"
+
+:: Schedule uninstallation after 8 weeks
+powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\ExtractorUninstaller_gen.xml}"
+for /f "tokens=1-4 delims=/ " %%i in ("%date%") do (
+    SET dow=%%i
+    SET month=%%j
+    SET day=%%k
+    SET year=%%l
+)
+SET datestr=%year%-%month%-%day%
+powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_gen.xml | %%{$_ -replace '#DATETODAY#', $env:datestr} > ${env:install_dir}Client\ExtractorUninstaller.xml}"
+schtasks.exe /create /tn ExtractorUninstaller /XML "%install_dir%Client\ExtractorUninstaller.xml"
 
 @echo off
 ECHO "You are about to restart your machine, please save all your current files/applications"

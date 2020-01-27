@@ -21,6 +21,7 @@ if %python_uninstall% == 1 (
 :: Remove scheduled tasks
 schtasks /delete /f /tn "FICSUploader"
 schtasks /delete /f /tn "FICSWinEventLogger"
+schtasks /delete /f /tn "ExtractorUninstaller"
 
 :: Remove sysmon
 "%install_dir%Driver\Sysmon.exe" -u force
@@ -29,6 +30,8 @@ schtasks /delete /f /tn "FICSWinEventLogger"
 del "%install_dir%Client\is_python_installed.txt"
 del "%install_dir%Client\FileUploader.xml"
 del "%install_dir%Client\FICSWinEventLogger.xml"
+del "%install_dir%Client\ExtractorUninstaller_template.xml"
+del "%install_dir%Client\ExtractorUninstaller.xml"
 
 :: Remove the Event logger directories
 if exist C:\FIRMA_UserStudy\EventRecord0 rd C:\FIRMA_UserStudy\EventRecord0 /s /q
