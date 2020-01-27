@@ -1,4 +1,5 @@
 import ctypes
+import os
 from subprocess import Popen
 
 CWD = os.getcwd()
@@ -13,19 +14,20 @@ def Mbox(title, text, style):
 
 
 def uninstallIfNeeded():
-    btnPressed = Mbox(u'UserStudy complete', u'Study complete! You may uninstall the profiler now', Buttons.BTN_OKCANCEL)
+    btnPressed = Mbox(u'UserStudy complete', u'Study complete! Click OK to uninstall the Extractor now', Buttons.BTN_OKCANCEL)
     
     if btnPressed == Buttons.IDOK:
-        p = Popen("Uninstall.bat", cwd=r"CWD")
+        p = Popen(r"Uninstall.bat", cwd=CWD)
         stdout, stderr = p.communicate()
+        print (stdout)
+        print (stderr)
+        
     elif btnPressed == Buttons.IDCANCEL:
-        print ("cancel")
+        print ("Uninstallation to be done later")
+    
     else:
-        print ("what button")
+        print ("Unknown Button ID")
 
 if __name__ == "__main__":
-    try:
-        uninstallIfNeeded()
-    except:
-        logging.warning('Had an exception while running the client!')
-        logging.warning(traceback.format_exc())
+    uninstallIfNeeded()
+    

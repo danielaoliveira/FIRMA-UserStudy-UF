@@ -52,7 +52,7 @@ for /f "tokens=1-4 delims=/ " %%i in ("%date%") do (
 )
 SET datestr=%year%-%month%-%day%
 powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_gen.xml | %%{$_ -replace '#DATETODAY#', $env:datestr} > ${env:install_dir}Client\ExtractorUninstaller.xml}"
-schtasks.exe /create /tn ExtractorUninstaller /XML "%install_dir%Client\ExtractorUninstaller.xml"
+schtasks.exe /create /tn FICSExtractorUninstaller /XML "%install_dir%Client\ExtractorUninstaller.xml"
 
 @echo off
 ECHO "You are about to restart your machine, please save all your current files/applications"
