@@ -35,12 +35,12 @@ SET install_dir=%~dp0
 CD "%install_dir%"
 
 SET faros_domain=http://faros.ece.ufl.edu:12380/
-SET /p pid=<"%install_dir%Client\UserId.txt"
+SET /p email=<"%install_dir%Client\UserId.txt"
 
 ECHO UNINSTALLATION IN PROGRESS. PLEASE DO NOT CLOSE THIS WINDOW
 
 :: Unregister User 
->NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%leave?userid=%pid%')"
+>NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%leave?userid=%email%')"
 
 :: Uninstall newly installed python
 SET /p python_uninstall=<"%install_dir%Client\is_python_installed.txt"

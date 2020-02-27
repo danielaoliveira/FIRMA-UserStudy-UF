@@ -33,10 +33,10 @@ SET install_dir=%~dp0
 CD %install_dir%
 
 SET faros_domain=http://faros.ece.ufl.edu:12380/ 
-SET /p pid="Please enter your participant ID here:"
->"%install_dir%Client\UserId.txt" ECHO %pid%
-SET /p uname="Please enter your name here (avoid spaces and special characters):"
-SET /p email="Please enter your primary email here:"
+:: SET /p pid="Please enter your participant ID here:"
+:: SET /p uname="Please enter your name here (avoid spaces and special characters):"
+SET /p email="Please enter your email used for survey: "
+>"%install_dir%Client\UserId.txt" ECHO %email%
 
 @ECHO OFF
 
@@ -72,7 +72,7 @@ GOTO EndOfFile
 >NUL 2>&1 "C:\Program Files\Python37\Scripts\pip" install requests
 
 :: ECHO "Installed python and requests library". Register User now
->NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%uname%&email=%email%&userid=%pid%')"
+>NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
 
 :: Install the EventLogger
 >NUL msiexec /I "%install_dir%EventLogger\FIRMALoggerInstaller.msi" /qn /L+ Install.log
