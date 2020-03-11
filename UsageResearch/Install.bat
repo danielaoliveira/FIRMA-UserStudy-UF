@@ -43,36 +43,36 @@ SET /p email="Please enter your email used for survey: "
 ECHO .
 ECHO DO NOT CLOSE THIS WINDOW. Installation is in Progress...
 
-:: Install python if not installed already
-IF NOT EXIST "C:\Program Files\Python37\python.exe" (
+:: check if right version of python is already installed
+SET "$py=pyVersion0"
+
+CALL:pythonVersionCheck
+
+:: check if the right version of python is installed
+FOR /f "delims=" %%a IN ('python #.py ^| findstr "3.7"') DO SET "$py=pyVersion3"
+DEL #.py
+GOTO %$py%
+
+:: looks like we don't have the right version / any version of python installed
+:pyVersion0
+:: force install in C:\Python37\
+echo force py3.7
 >NUL "%install_dir%Client\python-3.7.3-amd64-webinstall" /quiet InstallAllUsers=1 PrependPath=1 SimpleInstall=1
 >"%install_dir%Client\is_python_installed.txt" ECHO 1
-) ELSE (
+GOTO postPythonInstallation
+
+:: looks like we have the right version installed
+:pyVersion3
+echo using 3
 >"%install_dir%Client\is_python_installed.txt" ECHO 0
-)
 
-:: Usually python installation is where our installer fails
-:: Check for successful python installation again
-IF NOT EXIST "C:\Program Files\Python37\python.exe" (
-ECHO Python installation failed. Make sure the system has active internet connection and run installer again
-PAUSE
-GOTO EndOfFile
-)
-
-:: Usually python installation is where our installer fails
-:: Check for successful python installation again
-IF NOT EXIST "C:\Program Files\Python37\Scripts\pip.exe" (
-ECHO Pip not found. Make sure the system has active internet connection and run installer again
-PAUSE
-GOTO EndOfFile
-)
+:postPythonInstallation
 
 :: Install requests package
-:: Not writing errors too as pip cries a lot about version mismatch
->NUL 2>&1 "C:\Program Files\Python37\Scripts\pip" install requests
+>NUL 2>&1 pip3.7 install requests
 
 :: ECHO "Installed python and requests library". Register User now
->NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
+>NUL py -3.7 -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
 
 :: Install the EventLogger
 >NUL msiexec /I "%install_dir%EventLogger\FIRMALoggerInstaller.msi" /qn /L+ Install.log
@@ -112,5 +112,11 @@ ECHO You are about to restart your machine, please save all your current files/a
 ECHO .
 PAUSE
 shutdown -r -f -t 10 -c "Reboot System in 10 Seconds"
+
+EXIT /B
+
+:: python installation test
+:pythonVersionCheck
+echo import sys; print('{0[0]}.{0[1]}'.format(sys.version_info^)^) >#.py
 
 :EndOfFile
