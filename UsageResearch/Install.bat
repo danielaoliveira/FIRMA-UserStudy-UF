@@ -56,18 +56,15 @@ GOTO %$py%
 :: looks like we don't have the right version / any version of python installed
 :pyVersion0
 :: force install in C:\Python37\
-echo force py3.7
 >NUL "%install_dir%Client\python-3.7.3-amd64-webinstall" /quiet InstallAllUsers=1 PrependPath=1 SimpleInstall=1
 >"%install_dir%Client\is_python_installed.txt" ECHO 1
 GOTO postPythonInstallation
 
 :: looks like we have the right version installed
 :pyVersion3
-echo using 3
 >"%install_dir%Client\is_python_installed.txt" ECHO 0
 
 :postPythonInstallation
-
 :: Install requests package
 >NUL 2>&1 pip3.7 install requests
 
