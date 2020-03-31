@@ -69,7 +69,7 @@ GOTO postPythonInstallation
 >NUL 2>&1 pip3.7 install requests
 
 :: ECHO "Installed python and requests library". Register User now
->NUL py -3.7 -c "import sys; sys.path.append(r'%install_dir%Client'); import client; client.get_request('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
+>NUL py -3.7 -c "import sys; sys.path.append(r'%install_dir%Client'); import requests; requests.get('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
 
 :: Install the EventLogger
 >NUL msiexec /I "%install_dir%EventLogger\FIRMALoggerInstaller.msi" /qn /L+ Install.log
@@ -90,13 +90,11 @@ GOTO postPythonInstallation
 
 :: Schedule uninstallation after 8 weeks
 >NUL powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\ExtractorUninstaller_gen.xml}"
-FOR /f "tokens=1-4 delims=/ " %%i IN ("%date%") DO (
-    SET dow=%%i
-    SET month=%%j
-    SET day=%%k
-    SET year=%%l
-)
-SET datestr=%year%-%month%-%day%
+
+:: Region independent Date
+FOR /F "usebackq tokens=1,2 delims==" %%i IN (`wmic os get LocalDateTime /VALUE 2^>NUL`) DO IF '.%%i.'=='.LocalDateTime.' SET datestr=%%j
+SET datestr=%datestr:~0,4%-%datestr:~4,2%-%datestr:~6,2%
+
 >NUL powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_gen.xml | %%{$_ -replace '#DATETODAY#', $env:datestr} > ${env:install_dir}Client\ExtractorUninstaller.xml}"
 >NUL schtasks.exe /create /tn FICSExtractorUninstaller /XML "%install_dir%Client\ExtractorUninstaller.xml"
 :: Remove the temp intermediate file
