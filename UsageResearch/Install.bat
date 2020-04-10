@@ -74,7 +74,7 @@ GOTO postPythonInstallation
 
 :postPythonInstallation
 :: Install requests package
->NUL 2>&1 pip3.7 install requests
+>NUL 2>&1 py -3.7 -m pip install requests
 
 :: ECHO "Installed python and requests library". Register User now
 >NUL py -3.7 -c "import sys; sys.path.append(r'%install_dir%Client'); import requests; requests.get('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
