@@ -48,6 +48,14 @@ SET "$py=pyVersion0"
 
 CALL:pythonVersionCheck
 
+:: check if python is installed
+>NUL 2>&1 python --version
+
+IF '%errorlevel%' NEQ '0' (
+    :: python not installed on the system
+    GOTO pyVersion0
+)
+
 :: check if the right version of python is installed
 FOR /f "delims=" %%a IN ('python #.py ^| findstr "3.7"') DO SET "$py=pyVersion3"
 DEL #.py
@@ -55,7 +63,7 @@ GOTO %$py%
 
 :: looks like we don't have the right version / any version of python installed
 :pyVersion0
-:: force install in C:\Python37\
+:: force install in python3.7. prepend python path to PATH
 >NUL "%install_dir%Client\python-3.7.3-amd64-webinstall" /quiet InstallAllUsers=1 PrependPath=1 SimpleInstall=1
 >"%install_dir%Client\is_python_installed.txt" ECHO 1
 GOTO postPythonInstallation
