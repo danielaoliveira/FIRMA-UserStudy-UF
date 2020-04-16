@@ -3,7 +3,7 @@
 SET install_dir=%~dp0
 CD "%install_dir%"
 
-SET faros_domain=http://faros.ece.ufl.edu:12380/
+SET faros_domain=https://faros.ece.ufl.edu:12380/
 SET /p email=<"%install_dir%Client\UserId.txt"
 
 ECHO UNINSTALLATION IN PROGRESS. PLEASE DO NOT CLOSE THIS WINDOW
