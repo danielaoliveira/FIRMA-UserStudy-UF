@@ -6,7 +6,7 @@ import logging
 
 CWD = os.getcwd()
 
-SERVER_URL = 'https://faros.ece.ufl.edu:12380'
+SERVER_URL = 'https://faros.ece.ufl.edu:12480'
 #SERVER_URL = 'http://localhost:8080'
 USERID_FILE = CWD+'\\UserId.txt'
 RECORDS_DIR = 'C:\\Windows\\'

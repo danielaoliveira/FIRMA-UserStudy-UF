@@ -32,7 +32,7 @@ IF '%errorlevel%' NEQ '0' (
 SET install_dir=%~dp0
 CD %install_dir%
 
-SET faros_domain=https://faros.ece.ufl.edu:12380/ 
+SET faros_domain=https://faros.ece.ufl.edu:12480/
 :: SET /p pid="Please enter your participant ID here:"
 :: SET /p uname="Please enter your name here (avoid spaces and special characters):"
 SET /p email="Please enter your email used for survey: "
