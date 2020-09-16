@@ -54,5 +54,7 @@
     </PipeEvent>
     <WmiEvent onmatch="include">
     </WmiEvent>
+    <DnsQuery onmatch="include">
+    </DnsQuery>
   </EventFiltering>
 </Sysmon>
