@@ -57,21 +57,21 @@ IF '%errorlevel%' NEQ '0' (
 )
 
 :: check if the right version of python is installed
-SET minimumVersionPresent = true
+REM SET minimumVersionPresent = true
 FOR /F "tokens=2 delims= " %%a IN ('python -V') DO SET currentVersion=%%a
 FOR /F "tokens=1,2,3 delims=."  %%a IN ("%currentVersion%") DO (
-    IF %%a LSS 3 SET minimumVersionPresent=false
+    IF %%a LSS 3 GOTO pyVersion0
     IF %%a EQU 3 (
-        IF %%b LSS 7 SET minimumVersionPresent=false
+        IF %%b LSS 7 GOTO pyVersion0
     )
     IF %%a EQU 3 (
         IF %%b EQU 7 (
-            IF %%c LSS 3 SET minimumVersionPresent=false
+            IF %%c LSS 3 GOTO pyVersion0
         )
     )
 )
-IF %minimumVersionPresent% EQU false (GOTO pyVersion0) ELSE (GOTO pyVersion3)
-
+REM IF %minimumVersionPresent% EQU false (GOTO pyVersion0) ELSE (GOTO pyVersion3)
+GOTO pyVersion3
 :: looks like we don't have the right version / any version of python installed
 :pyVersion0
 :: force install in python3.8. prepend python path to PATH

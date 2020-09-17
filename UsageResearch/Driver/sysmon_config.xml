@@ -34,6 +34,9 @@
 		<DestinationIp condition="is">127.0.0.1</DestinationIp>
 		<DestinationIp condition="begin with">fe80:0:0:0</DestinationIp>
 	</NetworkConnect>
+	<DnsQuery onmatch="include">
+      <QueryName condition="contains">.</QueryName>
+    </DnsQuery>
     <DriverLoad onmatch="include">
     </DriverLoad>
     <ImageLoad onmatch="include">
@@ -54,7 +57,5 @@
     </PipeEvent>
     <WmiEvent onmatch="include">
     </WmiEvent>
-    <DnsQuery onmatch="include">
-    </DnsQuery>
   </EventFiltering>
 </Sysmon>
