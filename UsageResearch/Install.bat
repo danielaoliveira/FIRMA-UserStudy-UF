@@ -46,7 +46,7 @@ ECHO DO NOT CLOSE THIS WINDOW. Installation is in Progress...
 :: check if right version of python is already installed
 SET "$py=pyVersion0"
 
-CALL:pythonVersionCheck
+
 
 :: check if python is installed
 >NUL 2>&1 python --version
@@ -57,14 +57,25 @@ IF '%errorlevel%' NEQ '0' (
 )
 
 :: check if the right version of python is installed
-FOR /f "delims=" %%a IN ('python #.py ^| findstr "3.7"') DO SET "$py=pyVersion3"
-DEL #.py
-GOTO %$py%
-
+REM SET minimumVersionPresent = true
+FOR /F "tokens=2 delims= " %%a IN ('python -V') DO SET currentVersion=%%a
+FOR /F "tokens=1,2,3 delims=."  %%a IN ("%currentVersion%") DO (
+    IF %%a LSS 3 GOTO pyVersion0
+    IF %%a EQU 3 (
+        IF %%b LSS 7 GOTO pyVersion0
+    )
+    IF %%a EQU 3 (
+        IF %%b EQU 7 (
+            IF %%c LSS 3 GOTO pyVersion0
+        )
+    )
+)
+REM IF %minimumVersionPresent% EQU false (GOTO pyVersion0) ELSE (GOTO pyVersion3)
+GOTO pyVersion3
 :: looks like we don't have the right version / any version of python installed
 :pyVersion0
-:: force install in python3.7. prepend python path to PATH
->NUL "%install_dir%Client\python-3.7.3-amd64-webinstall" /quiet InstallAllUsers=1 PrependPath=1 SimpleInstall=1
+:: force install in python3.8. prepend python path to PATH
+>NUL "%install_dir%Client\python-3.8.5-amd64-webinstall" /quiet InstallAllUsers=1 PrependPath=1 SimpleInstall=1
 >"%install_dir%Client\is_python_installed.txt" ECHO 1
 GOTO postPythonInstallation
 
@@ -74,10 +85,10 @@ GOTO postPythonInstallation
 
 :postPythonInstallation
 :: Install requests package
->NUL 2>&1 py -3.7 -m pip install requests
+>NUL 2>&1 py -m pip install requests
 
 :: ECHO "Installed python and requests library". Register User now
->NUL py -3.7 -c "import sys; sys.path.append(r'%install_dir%Client'); import requests; requests.get('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
+>NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import requests; requests.get('%faros_domain%register?username=%email%&email=%email%&userid=%email%')"
 
 :: Install the EventLogger
 >NUL msiexec /I "%install_dir%EventLogger\FIRMALoggerInstaller.msi" /qn /L+ Install.log
@@ -96,17 +107,17 @@ GOTO postPythonInstallation
 >NUL powershell -Command "& {cat  ${env:install_dir}Client\FICSWinEventLogger_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\FICSWinEventLogger.xml}"
 >NUL schtasks.exe /create /tn FICSWinEventLogger /XML "%install_dir%Client\FICSWinEventLogger.xml"
 
-:: Schedule uninstallation after 8 weeks
->NUL powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\ExtractorUninstaller_gen.xml}"
+REM :: Schedule uninstallation after 8 weeks
+REM >NUL powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_template.xml | %%{$_ -replace '#FICSTEST#', $env:install_dir} > ${env:install_dir}Client\ExtractorUninstaller_gen.xml}"
 
-:: Region independent Date
-FOR /F "usebackq tokens=1,2 delims==" %%i IN (`wmic os get LocalDateTime /VALUE 2^>NUL`) DO IF '.%%i.'=='.LocalDateTime.' SET datestr=%%j
-SET datestr=%datestr:~0,4%-%datestr:~4,2%-%datestr:~6,2%
+REM :: Region independent Date
+REM FOR /F "usebackq tokens=1,2 delims==" %%i IN (`wmic os get LocalDateTime /VALUE 2^>NUL`) DO IF '.%%i.'=='.LocalDateTime.' SET datestr=%%j
+REM SET datestr=%datestr:~0,4%-%datestr:~4,2%-%datestr:~6,2%
 
->NUL powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_gen.xml | %%{$_ -replace '#DATETODAY#', $env:datestr} > ${env:install_dir}Client\ExtractorUninstaller.xml}"
->NUL schtasks.exe /create /tn FICSExtractorUninstaller /XML "%install_dir%Client\ExtractorUninstaller.xml"
-:: Remove the temp intermediate file
->NUL del "%install_dir%Client\ExtractorUninstaller_gen.xml"
+REM >NUL powershell -Command "& {cat  ${env:install_dir}Client\ExtractorUninstaller_gen.xml | %%{$_ -replace '#DATETODAY#', $env:datestr} > ${env:install_dir}Client\ExtractorUninstaller.xml}"
+REM >NUL schtasks.exe /create /tn FICSExtractorUninstaller /XML "%install_dir%Client\ExtractorUninstaller.xml"
+REM :: Remove the temp intermediate file
+REM >NUL del "%install_dir%Client\ExtractorUninstaller_gen.xml"
 
 ECHO .
 ECHO INSTALLATION COMPLETE
@@ -118,8 +129,6 @@ shutdown -r -f -t 10 -c "Reboot System in 10 Seconds"
 
 EXIT /B
 
-:: python installation test
-:pythonVersionCheck
-echo import sys; print('{0[0]}.{0[1]}'.format(sys.version_info^)^) >#.py
+
 
 :EndOfFile

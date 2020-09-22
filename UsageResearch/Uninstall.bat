@@ -9,12 +9,12 @@ SET /p email=<"%install_dir%Client\UserId.txt"
 ECHO UNINSTALLATION IN PROGRESS. PLEASE DO NOT CLOSE THIS WINDOW
 
 :: Unregister User 
->NUL py -3.7 -c "import sys; sys.path.append(r'%install_dir%Client'); import requests; requests.get('%faros_domain%leave?userid=%email%')"
+>NUL py -c "import sys; sys.path.append(r'%install_dir%Client'); import requests; requests.get('%faros_domain%leave?userid=%email%')"
 
 :: Uninstall newly installed python
 SET /p python_uninstall=<"%install_dir%Client\is_python_installed.txt"
 IF %python_uninstall%==1 (
->NUL "%install_dir%Client\python-3.7.3-amd64-webinstall" /quiet /uninstall
+>NUL "%install_dir%Client\python-3.8.5-amd64-webinstall" /quiet /uninstall
 )
 
 :: Remove the Event logger
@@ -23,7 +23,7 @@ IF %python_uninstall%==1 (
 :: Remove scheduled tasks
 >NUL schtasks /delete /f /tn "FICSUploader"
 >NUL schtasks /delete /f /tn "FICSWinEventLogger"
->NUL schtasks /delete /f /tn "FICSExtractorUninstaller"
+REM >NUL schtasks /delete /f /tn "FICSExtractorUninstaller"
 
 :: Remove sysmon
 >NUL 2>&1 "%install_dir%Driver\Sysmon.exe" -u force
@@ -32,7 +32,7 @@ IF %python_uninstall%==1 (
 >NUL DEL "%install_dir%Client\is_python_installed.txt"
 >NUL DEL "%install_dir%Client\FileUploader.xml"
 >NUL DEL "%install_dir%Client\FICSWinEventLogger.xml"
->NUL DEL "%install_dir%Client\ExtractorUninstaller.xml"
+REM >NUL DEL "%install_dir%Client\ExtractorUninstaller.xml"
 
 :: Remove the Event logger directories
 IF EXIST C:\FIRMA_UserStudy\EventRecord0 >NUL RD C:\FIRMA_UserStudy\EventRecord0 /s /q
